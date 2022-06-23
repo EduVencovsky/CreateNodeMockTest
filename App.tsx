@@ -27,6 +27,7 @@ const App = () => {
   const onLayout = () => {
     // gets called
     console.log('onLayout');
+    console.log('measure is truthy', !!viewRef.current?.measure); // => true
     viewRef.current?.measure((x, y, width, height, pageX, pageY) => {
       // never gets called
       console.log('measure');
