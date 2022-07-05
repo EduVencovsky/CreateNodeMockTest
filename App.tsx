@@ -49,4 +49,47 @@ const App = () => {
   );
 };
 
+export class AppWithClass extends React.Component<
+  {},
+  {measure: Measure | undefined}
+> {
+  private viewRef: React.RefObject<View>;
+  state: {measure: Measure | undefined} = {
+    measure: undefined,
+  };
+
+  constructor(props: {}) {
+    super(props);
+    this.viewRef = React.createRef<View>();
+  }
+
+  onLayout = () => {
+    // gets called
+    console.log('onLayout');
+    console.log('measure is truthy', !!this.viewRef.current?.measure); // => true
+    this.viewRef.current?.measure((x, y, width, height, pageX, pageY) => {
+      // never gets called
+      console.log('measure');
+      this.setState({measure: {x, y, width, height, pageX, pageY}});
+    });
+  };
+
+  render() {
+    return (
+      <SafeAreaView>
+        <View onLayout={this.onLayout} ref={this.viewRef}>
+          <Text>Test Text</Text>
+          <Text>
+            {this.state.measure
+              ? Object.values(this.state.measure).reduce(
+                  (prev, next) => prev + next,
+                )
+              : ''}
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+}
+
 export default App;
